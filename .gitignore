@@ -1,0 +1,5 @@
+bin
+config.yaml
+
+# Database sqlite files
+*.db
