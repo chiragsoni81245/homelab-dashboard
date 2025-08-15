@@ -1,8 +1,10 @@
+// Its a package containing http server build using standard net/http
 package server
 
 import (
 	"fmt"
 	"homelab-dashboard/internal/config"
+	"homelab-dashboard/internal/logger"
 	"net/http"
 )
 
@@ -33,5 +35,6 @@ func NewServer() *Server {
 }
 
 func (s *Server) Start() error {
+	logger.Log.Info(fmt.Sprintf("Listening on %s", s.Address))
 	return http.ListenAndServe(s.Address, s.Router)
 }

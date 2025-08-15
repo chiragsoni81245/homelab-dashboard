@@ -21,6 +21,5 @@ var startCmd = &cobra.Command{
 		if err != nil {
 			logger.Log.Fatal(err)
 		}
-
 	},
 }

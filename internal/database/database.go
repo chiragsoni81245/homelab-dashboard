@@ -38,8 +38,8 @@ type User struct {
     PasswordHash   string           `gorm:"index"`
     CreatedAt      time.Time
 
-	UserRoles      []UserRole       `gorm:"foreignKey:UserId"`
-	LoginSessions  []LoginSessions  `gorm:"foreignKey:UserId"`
+	UserRoles      []UserRole       `gorm:"foreignKey:UserId;references:Id;constraint:OnDelete:CADCADE"`
+	LoginSessions  []LoginSessions  `gorm:"foreignKey:UserId;references:Id;constraint:OnDelete:CADCADE"`
 }
 
 type Role struct {
@@ -48,7 +48,7 @@ type Role struct {
     PasswordHash   string     `gorm:"index"`
     CreatedAt      time.Time 
 
-	UserRoles      []UserRole `gorm:"foreignKey:RoleId"`
+	UserRoles      []UserRole `gorm:"foreignKey:RoleId;references:Id;constraint:OnDelete:CADCADE"`
 }
 
 type UserRole struct {
@@ -56,8 +56,8 @@ type UserRole struct {
 	UserId     uint
     CreatedAt  time.Time
 
-	Role       Role      `gorm:"foreignKey:Id"`
-	User       User      `gorm:"foreignKey:Id"`
+	Role       Role      `gorm:"foreignKey:Id;references:RoleId"`
+	User       User      `gorm:"foreignKey:Id;references:UserId"`
 }
 
 type LoginSessions struct {
@@ -65,5 +65,5 @@ type LoginSessions struct {
 	IP         string
     CreatedAt  time.Time
 
-	User       User      `gorm:"foreignKey:Id"`
+	User       User      `gorm:"foreignKey:Id;references:UserId"`
 }

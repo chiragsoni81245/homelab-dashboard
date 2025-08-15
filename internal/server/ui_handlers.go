@@ -6,7 +6,7 @@ import (
 )
 
 // Pre template render for caching
-var templateFiles, _ = GetTemplateFile("internal/server/static") 
+var templateFiles = GetTemplateFilePaths("internal/server/templates") 
 var templates = template.Must(template.ParseFiles(templateFiles...))
 
 func renderTemplate(w http.ResponseWriter, tmpl string, data any) {

@@ -1,14 +1,15 @@
 package server
 
 import (
+	"homelab-dashboard/internal/logger"
 	"os"
 	"path"
 )
 
-func GetTemplateFile(baseDir string) ([]string, error) {
+func GetTemplateFilePaths(baseDir string) []string {
 	files, err := os.ReadDir(baseDir)
 	if err != nil {
-		return nil, err
+		logger.Log.Fatal(err)
 	}
 
 	var templateFiles []string
@@ -18,5 +19,5 @@ func GetTemplateFile(baseDir string) ([]string, error) {
 		}
 	}
 
-	return templateFiles, nil
+	return templateFiles
 }

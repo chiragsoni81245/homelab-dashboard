@@ -23,16 +23,15 @@ func Execute() {
 	cobra.OnInitialize(initApp)
 	err := rootCmd.Execute()
 	if err != nil {
+		logger.Log.Error(err)
 		os.Exit(1)
 	}
 }
 
 func initApp() {
 	logger.InitLogger()
-    if configPath != "" {
-	    config.LoadConfig(configPath)
-	    database.InitDB(config.App.DatabaseURI)
-    }
+	config.LoadConfig(configPath)
+	database.InitDB(config.App.DatabaseURI)
 }
 
 func init() {
