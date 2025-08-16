@@ -1,6 +1,7 @@
 package server
 
 import (
+	"homelab-dashboard/internal/logger"
 	"html/template"
 	"net/http"
 )
@@ -24,5 +25,7 @@ func (uh *UIHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uh *UIHandlers) DashboardHandler(w http.ResponseWriter, r *http.Request) {
+	claims := r.Context().Value("claims").(*JWTClaims)
+	logger.Log.Info(claims)
 	renderTemplate(w, "index", nil)
 }

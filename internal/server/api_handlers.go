@@ -28,7 +28,7 @@ func (ah *AuthAPIHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) 
 	password := data["password"]
 
 	var user database.User
-	result := database.DB.Where("username = ?", username).Limit(1).Find(&user)
+	result := database.DB.Preload("UserRoles.Role").Where("username = ?", username).Limit(1).Find(&user)
 	if result.Error != nil {
 		if result.RowsAffected == 0 {
 			w.WriteHeader(401)

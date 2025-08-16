@@ -1,7 +1,7 @@
 package server
 
 import (
-	"fmt"
+	"context"
 	"homelab-dashboard/internal/logger"
 	"net/http"
 	"slices"
@@ -15,21 +15,20 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			// Do authentication check here
 			cookies := r.CookiesNamed("token")
 			if len(cookies) == 0 {
-				w.WriteHeader(401)
-				WriteJson(w, JSON{"error": "Unauthorised access 1"})
+				http.Redirect(w, r, "/login", http.StatusFound)
 				return
 			}
 
 			tokenString := cookies[0].Value
-			_, err := ParseJWT(tokenString)
+			claims, err := ParseJWT(tokenString)
 			if err != nil {
 				logger.Log.Error(err)
-				w.WriteHeader(401)
-				WriteJson(w, JSON{"error": "Unauthorised access 2"})
+				http.Redirect(w, r, "/login", http.StatusFound)
 				return
 			}
-
-			next(w, r)
+			
+			ctx := context.WithValue(r.Context(), "claims", claims)
+			next(w, r.WithContext(ctx))
 		},
 	)
 }
@@ -41,8 +40,7 @@ func Role(roles []string) Middlewere {
 				// Do admin role check here
 				cookies := r.CookiesNamed("token")
 				if len(cookies) == 0 {
-					w.WriteHeader(401)
-					WriteJson(w, JSON{"error": "Unauthorised access"})
+					http.Redirect(w, r, "/login", http.StatusFound)
 					return
 				}
 
@@ -50,20 +48,19 @@ func Role(roles []string) Middlewere {
 				claims, err := ParseJWT(tokenString)
 				if err != nil {
 					logger.Log.Error(err)
-					w.WriteHeader(401)
-					WriteJson(w, JSON{"error": "Unauthorised access"})
+					http.Redirect(w, r, "/login", http.StatusFound)
 					return
 				}
 
 				for _, requiredRole := range roles {
 					if !slices.Contains(claims.Roles, requiredRole) {
-						w.WriteHeader(401)
-						WriteJson(w, JSON{"error": fmt.Sprintf("%s access is required for this feature", requiredRole)})
+						http.Redirect(w, r, "/login", http.StatusFound)
 						return
 					}
 				}
 
-				next(w, r)
+				ctx := context.WithValue(r.Context(), "claims", claims)
+				next(w, r.WithContext(ctx))
 			},
 		)
 	}
