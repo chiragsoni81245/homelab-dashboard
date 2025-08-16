@@ -6,6 +6,8 @@ import (
 	"homelab-dashboard/internal/config"
 	"homelab-dashboard/internal/logger"
 	"net/http"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type Server struct {
@@ -13,19 +15,40 @@ type Server struct {
 	Address string
 }
 
+type JSON map[string]any
+
+var JWT_SECRET []byte = []byte(config.App.Server.SecretKey) 
+
+func JWT_SECRET_FUNC (*jwt.Token) (any, error) {
+	return JWT_SECRET, nil
+}
+
+type JWTClaims struct {
+	UserId   uint   `json:"user_id"`
+	Username string `json:"username"`	
+	Roles    []string `json:"roles"`
+	jwt.RegisteredClaims
+}
+
+
 func NewServer() *Server {
 
 	router := http.NewServeMux()
 
-	// Static file server to server files from internal/static directory
-	staticHandler := http.FileServer(http.Dir("internal/static"))
+	// Static file server to server files from internal/server/static directory
+	staticHandler := http.FileServer(http.FS(staticFS))
 	router.Handle("GET /static/", staticHandler)
 
-	// UI routes
-	router.Handle("GET /", DashboardHandler{})
+	// Auth API routes
+	authAPI := AuthAPIHandlers{}
+	apiBasePath := "/api/v1"
+	router.HandleFunc(fmt.Sprintf("POST %s/auth/login", apiBasePath), authAPI.LoginHandler)
 
-	// API routes
-	router.Handle("GET /api/auth/", AuthHandler{})
+	// UI routes
+	ui := UIHandlers{}
+	router.HandleFunc("GET /login", ui.LoginHandler)
+	router.HandleFunc("GET /{$}", Chain(ui.DashboardHandler, AuthMiddleware))
+
 
 
 	return &Server{

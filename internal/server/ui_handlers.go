@@ -6,19 +6,23 @@ import (
 )
 
 // Pre template render for caching
-var templateFiles = GetTemplateFilePaths("internal/server/templates") 
-var templates = template.Must(template.ParseFiles(templateFiles...))
+var templates = template.Must(template.ParseFS(templateFS, "templates/*.html"))
 
 func renderTemplate(w http.ResponseWriter, tmpl string, data any) {
-	w.WriteHeader(200)
 	err := templates.ExecuteTemplate(w, tmpl+".html", data)
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
     }
 }
 
-type DashboardHandler struct {}
+// --------- UI Handlers -------------
 
-func (dh DashboardHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+type UIHandlers struct{}
+
+func (uh *UIHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "login", nil)
+}
+
+func (uh *UIHandlers) DashboardHandler(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "index", nil)
 }

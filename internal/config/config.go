@@ -12,6 +12,11 @@ type AppConfig struct {
     Server struct {
         Port           int    `mapstructure:"port"`
         LogLevel       string `mapstructure:"log_level"`
+		SecretKey      string `mapstructure:"secret_key"`
+		AdminAuth      struct {
+			Username string `mapstructure:"username"`
+			Password string `mapstructure:"password"`
+		} `mapstructure:"admin_auth"`
     } `mapstructure:"server"`
 }
 

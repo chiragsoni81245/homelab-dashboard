@@ -2,7 +2,9 @@
 package database
 
 import (
+	"homelab-dashboard/internal/config"
 	"homelab-dashboard/internal/logger"
+	"homelab-dashboard/internal/utils"
 	"time"
 
 	"gorm.io/driver/sqlite"
@@ -24,6 +26,45 @@ func InitDB(path string) {
 			logger.Log.Fatalf("failed to run migrations: %v", err)
 		}
 	}
+
+	// Populate Admin User credentials
+	var adminRole Role
+	result := DB.Where("id = 1").Find(&adminRole)
+	if result.Error != nil {
+		logger.Log.Fatal(result.Error)
+	}
+	if result.RowsAffected != 0 {
+		return
+	}	
+
+	adminRole = Role{
+		Id: 1,
+		Name: "admin",
+	}
+	result = DB.Create(&adminRole)
+	if result.Error != nil {
+		logger.Log.Fatal(result.Error)
+		return
+	}
+
+	adminUser := User{
+		Id: 1,
+		Username: config.App.Server.AdminAuth.Username,
+		PasswordHash: utils.HashPassword(config.App.Server.AdminAuth.Password),
+	}
+	result = DB.Create(&adminUser)
+	if result.Error != nil {
+		logger.Log.Fatal(result.Error)
+	}
+
+	adminUserRole := UserRole{
+		RoleId: 1,
+		UserId: 1,
+	}
+	result = DB.Create(&adminUserRole)
+	if result.Error != nil {
+		logger.Log.Fatal(result.Error)
+	}
 }
 
 
@@ -38,17 +79,16 @@ type User struct {
     PasswordHash   string           `gorm:"index"`
     CreatedAt      time.Time
 
-	UserRoles      []UserRole       `gorm:"foreignKey:UserId;references:Id;constraint:OnDelete:CADCADE"`
-	LoginSessions  []LoginSessions  `gorm:"foreignKey:UserId;references:Id;constraint:OnDelete:CADCADE"`
+	UserRoles      []UserRole       `gorm:"foreignKey:UserId;references:Id;constraint:OnDelete:CASCADE"`
+	LoginSessions  []LoginSessions  `gorm:"foreignKey:UserId;references:Id;constraint:OnDelete:CASCADE"`
 }
 
 type Role struct {
     Id             uint       `gorm:"primarykey"`
     Name           RoleName   `gorm:"index"`
-    PasswordHash   string     `gorm:"index"`
     CreatedAt      time.Time 
 
-	UserRoles      []UserRole `gorm:"foreignKey:RoleId;references:Id;constraint:OnDelete:CADCADE"`
+	UserRoles      []UserRole `gorm:"foreignKey:RoleId;references:Id;constraint:OnDelete:CASCADE"`
 }
 
 type UserRole struct {
