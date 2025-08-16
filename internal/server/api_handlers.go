@@ -1,15 +1,14 @@
 package server
 
 import (
-	"errors"
+	"encoding/json"
 	"homelab-dashboard/internal/database"
 	"homelab-dashboard/internal/logger"
-	"homelab-dashboard/internal/utils"
 	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"gorm.io/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //------------------ Authentication Handler ------------------
@@ -17,14 +16,21 @@ import (
 type AuthAPIHandlers struct{} 
 
 func (ah *AuthAPIHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
-	username := r.PostFormValue("username")
-	password := r.PostFormValue("password")
-	passwordHash := utils.HashPassword(password)
+	var data map[string]string
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		w.WriteHeader(400)
+		WriteJson(w, JSON{"error": "Invalid data"})
+		return
+	}
+
+	username := data["username"]
+	password := data["password"]
 
 	var user database.User
 	result := database.DB.Where("username = ?", username).Limit(1).Find(&user)
 	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		if result.RowsAffected == 0 {
 			w.WriteHeader(401)
 			WriteJson(w, JSON{"error": "Invalid credentials"})
 			return
@@ -36,9 +42,8 @@ func (ah *AuthAPIHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	logger.Log.Info(username, password)
-
-	if user.PasswordHash != passwordHash {
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	if err != nil {
 		w.WriteHeader(401)
 		WriteJson(w, JSON{"error": "Invalid credentials"})
 		return
@@ -67,15 +72,14 @@ func (ah *AuthAPIHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	w.WriteHeader(200)
 	http.SetCookie(w, &http.Cookie{
 		Name: "token",
 		Value: signedToken,
 		Expires: expiresAt,
-		Secure: true,
 		HttpOnly: true,
-		SameSite: http.SameSiteLaxMode,
+		Path: "/",
 	})
+	w.WriteHeader(200)
 	WriteJson(w, JSON{"success": true})
 }
 

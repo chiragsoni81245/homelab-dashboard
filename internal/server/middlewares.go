@@ -16,7 +16,8 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			cookies := r.CookiesNamed("token")
 			if len(cookies) == 0 {
 				w.WriteHeader(401)
-				WriteJson(w, JSON{"error": "Unauthorised access"})
+				WriteJson(w, JSON{"error": "Unauthorised access 1"})
+				return
 			}
 
 			tokenString := cookies[0].Value
@@ -24,10 +25,11 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			if err != nil {
 				logger.Log.Error(err)
 				w.WriteHeader(401)
-				WriteJson(w, JSON{"error": "Unauthorised access"})
+				WriteJson(w, JSON{"error": "Unauthorised access 2"})
+				return
 			}
 
-			next.ServeHTTP(w, r)
+			next(w, r)
 		},
 	)
 }
@@ -41,6 +43,7 @@ func Role(roles []string) Middlewere {
 				if len(cookies) == 0 {
 					w.WriteHeader(401)
 					WriteJson(w, JSON{"error": "Unauthorised access"})
+					return
 				}
 
 				tokenString := cookies[0].Value
@@ -49,16 +52,18 @@ func Role(roles []string) Middlewere {
 					logger.Log.Error(err)
 					w.WriteHeader(401)
 					WriteJson(w, JSON{"error": "Unauthorised access"})
+					return
 				}
 
 				for _, requiredRole := range roles {
 					if !slices.Contains(claims.Roles, requiredRole) {
 						w.WriteHeader(401)
 						WriteJson(w, JSON{"error": fmt.Sprintf("%s access is required for this feature", requiredRole)})
+						return
 					}
 				}
 
-				next.ServeHTTP(w, r)
+				next(w, r)
 			},
 		)
 	}
