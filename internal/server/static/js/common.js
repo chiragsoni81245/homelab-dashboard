@@ -54,7 +54,7 @@ function showToast(message, type = "success") {
 
 async function _fetch(url, ...options) {
     try {
-        const res = await fetch(url, ...options);
+        const res = await fetch(`${BASE_API_URL}${url}`, ...options);
 
         let data;
 

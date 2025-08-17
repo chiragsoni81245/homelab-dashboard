@@ -7,7 +7,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
     messageEl.classList.add("hidden");
 
-    let [ok, data] = await _fetch(`${BASE_API_URL}/auth/login`, {
+    let [ok, data] = await _fetch("/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -2,8 +2,10 @@ package server
 
 import (
 	"encoding/json"
+	"homelab-dashboard/internal/applications"
 	"homelab-dashboard/internal/database"
 	"homelab-dashboard/internal/logger"
+	"homelab-dashboard/internal/system"
 	"net/http"
 	"time"
 
@@ -81,5 +83,37 @@ func (ah *AuthAPIHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) 
 	})
 	w.WriteHeader(200)
 	WriteJson(w, JSON{"success": true})
+}
+
+
+type SystemAPIHandler struct{}
+
+func (sh *SystemAPIHandler) GetSystemStats(w http.ResponseWriter, r *http.Request) {
+	stats, err := system.GetSystemStatus()
+	if err != nil {
+		logger.Log.Error(err)
+		w.WriteHeader(500)
+		WriteJson(w, JSON{"error": "Something went wrong"})
+		return
+	}
+
+	w.WriteHeader(200)
+	WriteJson(w, stats)
+}
+
+
+type ApplicationAPIHandler struct{}
+
+func (sh *ApplicationAPIHandler) GetApplications(w http.ResponseWriter, r *http.Request) {
+	currentApplications, err := applications.GetApplications()
+	if err != nil {
+		logger.Log.Error(err)
+		w.WriteHeader(500)
+		WriteJson(w, JSON{"error": "Something went wrong"})
+		return
+	}
+
+	w.WriteHeader(200)
+	WriteJson(w, currentApplications)
 }
 

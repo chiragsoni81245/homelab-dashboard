@@ -39,10 +39,20 @@ func NewServer() *Server {
 	staticHandler := http.FileServer(http.FS(staticFS))
 	router.Handle("GET /static/", staticHandler)
 
+	apiBasePath := "/api/v1"
+
 	// Auth API routes
 	authAPI := AuthAPIHandlers{}
-	apiBasePath := "/api/v1"
 	router.HandleFunc(fmt.Sprintf("POST %s/auth/login", apiBasePath), authAPI.LoginHandler)
+	
+	// System API Routes
+	systemAPI := SystemAPIHandler{}
+	router.HandleFunc(fmt.Sprintf("GET %s/system/stats", apiBasePath), Chain(systemAPI.GetSystemStats, AuthMiddleware))
+
+	// System API Routes
+	applicationAPI := ApplicationAPIHandler{}
+	router.HandleFunc(fmt.Sprintf("GET %s/applications", apiBasePath), Chain(applicationAPI.GetApplications, AuthMiddleware))
+
 
 	// UI routes
 	ui := UIHandlers{}
