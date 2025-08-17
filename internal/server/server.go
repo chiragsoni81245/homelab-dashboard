@@ -47,6 +47,7 @@ func NewServer() *Server {
 	// UI routes
 	ui := UIHandlers{}
 	router.HandleFunc("GET /login", ui.LoginHandler)
+	router.HandleFunc("GET /logout", ui.Logout)
 	router.HandleFunc("GET /{$}", Chain(ui.DashboardHandler, AuthMiddleware))
 
 

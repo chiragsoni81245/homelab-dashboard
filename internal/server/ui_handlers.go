@@ -1,9 +1,9 @@
 package server
 
 import (
-	"homelab-dashboard/internal/logger"
 	"html/template"
 	"net/http"
+	"time"
 )
 
 // Pre template render for caching
@@ -25,7 +25,17 @@ func (uh *UIHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uh *UIHandlers) DashboardHandler(w http.ResponseWriter, r *http.Request) {
-	claims := r.Context().Value("claims").(*JWTClaims)
-	logger.Log.Info(claims)
+	_ = r.Context().Value("claims").(*JWTClaims)
 	renderTemplate(w, "index", nil)
+}
+
+func (uh *UIHandlers) Logout(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name: "token",
+		Value: "",
+		Expires: time.Now(),
+		Path: "/",
+	})
+
+	http.Redirect(w, r, "/login", http.StatusFound)
 }
