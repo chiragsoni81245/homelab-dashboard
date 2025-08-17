@@ -1,11 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <link rel="stylesheet" src="/static/css/index.css" />
-        <script src="/static/css/index.css"></script>
-    </head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard - Homelab</title>
 
-    <body>
-        <h1>Homelab Dashboard</h1>
+        <!-- Common CSS first -->
+        <link rel="stylesheet" href="/static/css/common.css">
+        <!-- Page-specific CSS -->
+        <link rel="stylesheet" href="/static/css/dashboard.css">
+        <!-- FontAwesome CSS -->
+        <link rel="stylesheet" href="/static/css/font-awesome.min.css"/>
+
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+    <body class="lg:md:h-screen bg-cover bg-center">
+        <!-- Navbar -->
+        <nav class="bg-black/30 text-white flex justify-between items-center px-6 py-3 shadow-lg">
+            <div class="text-4xl font-slant">Homelab</div>
+            <div class="relative">
+                <button id="profileBtn" class="flex items-center focus:outline-none text-3xl">
+                    <i class="fa fa-user-circle"></i>
+                </button>
+                <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-2 z-20">
+                    <a href="/logout" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <div class="flex flex-col lg:md:flex-row h-[calc(100%-56px)]">
+            <!-- Left: System Info -->
+            <aside class="lg:md:w-1/6 bg-opacity-40 p-4 lg:md:overflow-y-auto">
+                <!-- CPU -->
+                <div class="mb-4 p-4 bg-black/30 text-white rounded-lg shadow">
+                    <div class="flex items-center mb-2">
+                        <i class="fa fa-microchip text-blue-500 mr-2"></i>
+                        <span class="font-semibold">CPU Usage</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4">
+                        <div id="cpuBar" class="bg-blue-500 h-4 rounded-full" style="width: 45%"></div>
+                    </div>
+                    <span id="cpuText" class="text-md text-white-700">45%</span>
+                </div>
+
+                <!-- Memory -->
+                <div class="mb-4 p-4 bg-black/30 text-white rounded-lg shadow">
+                    <div class="flex items-center mb-2">
+                        <i class="fa fa-microchip text-green-500 mr-2"></i>
+                        <span class="font-semibold">Memory Usage</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4">
+                        <div id="memoryBar" class="bg-green-500 h-4 rounded-full" style="width: 65%"></div>
+                    </div>
+                    <span id="memoryText" class="text-md text-white-700">65%</span>
+                </div>
+
+                <!-- Disks -->
+                <div class="p-4 bg-black/30 text-white rounded-lg shadow">
+                    <div class="flex items-center mb-2">
+                        <i class="fa fa-folder text-purple-500 mr-2"></i>
+                        <span class="font-semibold">Disks</span>
+                    </div>
+                    <div class="space-y-2">
+                        <div>
+                            <span class="text-md text-white-700">Disk A</span>
+                            <div class="w-full bg-gray-200 rounded-full h-4">
+                                <div class="bg-purple-500 h-4 rounded-full" style="width: 70%"></div>
+                            </div>
+                            <span class="text-xs text-white-300">70GB / 100GB</span>
+                        </div>
+                        <div>
+                            <span class="text-md text-white-700">Disk B</span>
+                            <div class="w-full bg-gray-200 rounded-full h-4">
+                                <div class="bg-purple-500 h-4 rounded-full" style="width: 40%"></div>
+                            </div>
+                            <span class="text-xs text-white-300">40GB / 100GB</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Right: Applications -->
+            <main class="flex-1 bg-opacity-40 p-4 lg:md:overflow-y-auto">
+                <div class="flex flex-wrap justify-evenly lg:md:justify-start lg:md:gap-6">
+                    <!-- Example Tile -->
+                    <a href="https://portainer.io" target="_blank" class="lg:md:w-40 lg:md:p-4 my-2 lg:md:my-0 w-30 p-2 bg-black/30 text-white rounded-lg shadow hover:shadow-lg transition flex flex-col items-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" alt="App" class="w-16 h-16 mb-2">
+                        <span class="font-medium">Portainer</span>
+                    </a>
+                    <a href="https://portainer.io" target="_blank" class="lg:md:w-40 lg:md:p-4 my-2 lg:md:my-0 w-30 p-2 bg-black/30 text-white rounded-lg shadow hover:shadow-lg transition flex flex-col items-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" alt="App" class="w-16 h-16 mb-2">
+                        <span class="font-medium">Portainer</span>
+                    </a>
+                    <a href="https://portainer.io" target="_blank" class="lg:md:w-40 lg:md:p-4 my-2 lg:md:my-0 w-30 p-2 bg-black/30 text-white rounded-lg shadow hover:shadow-lg transition flex flex-col items-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" alt="App" class="w-16 h-16 mb-2">
+                        <span class="font-medium">Portainer</span>
+                    </a>
+                </div>
+            </main>
+        </div>
+
+        <!-- Common JS first -->
+        <script src="/static/js/common.js"></script>
+        <!-- Page-specific JS -->
+        <script src="/static/js/dashboard.js"></script>
     </body>
 </html>
+
