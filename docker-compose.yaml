@@ -18,7 +18,9 @@ services:
       - APP_SERVER_ADMIN_AUTH_USERNAME=admin
       - APP_SERVER_ADMIN_AUTH_PASSWORD=123
     hostname: homelab-dashboard
-    image: homelab-dashboard:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - target: 8080
         published: 8080

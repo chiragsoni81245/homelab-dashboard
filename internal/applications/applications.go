@@ -2,7 +2,6 @@ package applications
 
 import (
 	"context"
-	"homelab-dashboard/internal/logger"
 
 	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/api/types/filters"
