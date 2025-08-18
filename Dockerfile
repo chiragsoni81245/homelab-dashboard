@@ -14,9 +14,11 @@ RUN go build \
     -ldflags='-linkmode external -extldflags "-static"' \
     -o /bin/homelab-dashboard
 
-FROM scratch AS runner
+FROM alpine:latest AS runner
 
 COPY --from=builder /bin/homelab-dashboard /bin/homelab-dashboard
+
+RUN mkdir /data
 
 EXPOSE 8080
 
