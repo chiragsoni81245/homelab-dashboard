@@ -16,23 +16,28 @@ async function updateSystemStatus() {
 
     const cpuBar = document.getElementById("cpuBar");
     const cpuText = document.getElementById("cpuText");
-    cpuBar.style.width = `${Math.round(data.cpu, 2)}%`;
-    cpuText.textContent = `${Math.round(data.cpu, 2)}%`;
+    cpuBar.style.width = `${data.cpu.toFixed(2)}%`;
+    cpuText.textContent = `${data.cpu.toFixed(2)}%`;
 
     const memoryBar = document.getElementById("memoryBar");
+    const memoryUsage = document.getElementById("memoryUsage");
     const memoryText = document.getElementById("memoryText");
-    memoryBar.style.width = `${Math.round(data.memory?.usage, 2)}%`;
-    memoryText.textContent = `${Math.round(data.memory?.usage, 2)}%`;
+    memoryBar.style.width = `${data.memory.usage.toFixed(2)}%`;
+    memoryUsage.textContent = `${data.memory.usage.toFixed(2)}%`;
+    memoryText.textContent = `${(data.memory.used / Math.pow(10, 9)).toFixed(2)} / ${Math.floor(data.memory.total / Math.pow(10, 9))}`;
 
     // For disks, you can extend to dynamic rendering
     const getDiskTemplate = ({ name, usage, total }) =>
         `
 <div>
     <span class="text-md text-white-700">${capitalize(name)}</span>
-    <div class="w-full bg-gray-200 rounded-full h-4">
-        <div class="bg-purple-500 h-4 rounded-full" style="width: ${usage}%"></div>
+    <div class="w-full bg-gray-200 rounded-full h-3">
+        <div class="bg-purple-500 h-3 rounded-full" style="width: ${usage}%"></div>
     </div>
-    <span class="text-xs text-white-300">${Math.round((total * usage) / 100, 2)}GB / ${Math.round(total)}GB</span>
+    <div class="flex flex-row justify-between items-baseline">
+        <p class="text-sm text-white-300 m-0 p-0">${usage.toFixed(2)}%</p>
+        <p class="text-xs text-white-300 m-0 p-0">${((total * usage) / 100).toFixed(2)}GB / ${Math.floor(total)}GB</p>
+    </div>
 </div>`.trim();
 
     const disksContainer = document.getElementById("disks-container");
