@@ -1,4 +1,6 @@
 # homelab-dashboard
+<img width="1853" height="897" alt="Screenshot from 2025-08-19 03-26-03" src="https://github.com/user-attachments/assets/64a63068-78a1-4c3a-9b53-b5d1fa57bb5d" />
+
 
 Its a web UI dashboard for your server where you get all these features
 
