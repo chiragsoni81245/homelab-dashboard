@@ -10,7 +10,7 @@ services:
       - HostProc=/host/proc
       - HostSys=/host/sys
       - HostEtc=/host/etc
-      - APP_DATABASE_URI="file:data.db?cache=shared&mode=rwc"
+      - APP_DATABASE_URI=file:data.db?cache=shared&mode=rwc
       - APP_SERVER_PORT=8080
       - APP_SERVER_LOG_LEVEL=debug
       - APP_SERVER_SECRET_KEY=test_secret
