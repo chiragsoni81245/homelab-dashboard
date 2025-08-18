@@ -32,7 +32,7 @@ async function updateSystemStatus() {
     const memoryText = document.getElementById("memoryText");
     memoryBar.style.width = `${data.memory.usage.toFixed(2)}%`;
     memoryUsage.textContent = `${data.memory.usage.toFixed(2)}%`;
-    memoryText.textContent = `${(data.memory.used / Math.pow(10, 9)).toFixed(2)} / ${Math.floor(data.memory.total / Math.pow(10, 9))}`;
+    memoryText.textContent = `${(data.memory.used / Math.pow(10, 9)).toFixed(2)}GB / ${Math.floor(data.memory.total / Math.pow(10, 9))}GB`;
 
     // For disks, you can extend to dynamic rendering
     const getDiskTemplate = ({ name, usage, total }) =>
