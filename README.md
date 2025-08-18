@@ -10,4 +10,4 @@ Its a web UI dashboard for your server where you get all these features
     - `x-homelab-web-url` this will decide on click of the application where will the user go
 - Display Server Stats like `Disk` usage, `CPU Usage`, `CPU Temptreture` and `Memory Usage` 
 
-This is an go-to server stats webui for `homelab` built via https://github.com/chiragsoni81245/homelab, but can be used standalone as well.
+It was built for for `homelabs` built via https://github.com/chiragsoni81245/homelab, but can be used standalone as well.
