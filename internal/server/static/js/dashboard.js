@@ -15,9 +15,17 @@ async function updateSystemStatus() {
     }
 
     const cpuBar = document.getElementById("cpuBar");
-    const cpuText = document.getElementById("cpuText");
-    cpuBar.style.width = `${data.cpu.toFixed(2)}%`;
-    cpuText.textContent = `${data.cpu.toFixed(2)}%`;
+    const cpuUsage = document.getElementById("cpuUsage");
+    const cpuTempreture = document.getElementById("cpuTempreture");
+
+    cpuBar.style.width = `${data.cpu.usage.toFixed(2)}%`;
+    cpuUsage.textContent = `${data.cpu.usage.toFixed(2)}%`;
+    if (data.cpu.tempreture > 0) {
+        cpuTempreture.classList.remove("hidden");
+    } else {
+        cpuTempreture.classList.add("hidden");
+    }
+    cpuTempreture.textContent = `${Math.floor(data.cpu.tempreture)}°C`;
 
     const memoryBar = document.getElementById("memoryBar");
     const memoryUsage = document.getElementById("memoryUsage");

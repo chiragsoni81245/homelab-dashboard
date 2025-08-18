@@ -8,6 +8,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
+	"github.com/shirou/gopsutil/host"
 )
 
 type DiskUsage struct {
@@ -18,7 +19,10 @@ type DiskUsage struct {
 }
 
 type SystemStatus struct {
-	CPU    float64 `json:"cpu"`
+	CPU    struct {
+		Usage float64 `json:"usage"`
+		Tempreture float64 `json:"tempreture"`
+	} `json:"cpu"`
 	Memory struct {
 		Used  uint64 `json:"used"`
 		Total uint64 `json:"total"`
@@ -36,8 +40,19 @@ func GetSystemStatus() (*SystemStatus, error) {
 		return nil, err
 	}
 	if len(cpuPercent) > 0 {
-		status.CPU = cpuPercent[0]
+		status.CPU.Usage = cpuPercent[0]
 	}
+
+	// Temperature
+	hostTempretures, err := host.SensorsTemperatures()
+	for _, t := range hostTempretures {
+		// filter only CPU sensors (varies by system: "coretemp", "cpu", etc.)
+		if t.SensorKey == "" || (t.SensorKey[:4] != "core" && t.SensorKey[:3] != "cpu") {
+			continue
+		}
+		status.CPU.Tempreture += t.Temperature
+	}
+	status.CPU.Tempreture = status.CPU.Tempreture / float64(len(hostTempretures))
 
 	// Memory
 	vmStat, err := mem.VirtualMemory()
