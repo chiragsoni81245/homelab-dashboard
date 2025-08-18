@@ -32,7 +32,7 @@ async function updateSystemStatus() {
     <div class="w-full bg-gray-200 rounded-full h-4">
         <div class="bg-purple-500 h-4 rounded-full" style="width: ${usage}%"></div>
     </div>
-    <span class="text-xs text-white-300">${(total * usage) / 100}GB / ${total}GB</span>
+    <span class="text-xs text-white-300">${Math.round((total * usage) / 100, 2)}GB / ${Math.round(total)}GB</span>
 </div>`.trim();
 
     const disksContainer = document.getElementById("disks-container");
@@ -72,8 +72,9 @@ async function loadApplications() {
 function main() {
     loadApplications();
     updateSystemStatus();
-    setTimeout(() => {
-        updateSystemStatus();
-    }, 5000);
+    setInterval(
+        updateSystemStatus,
+        parseInt(document.getElementById("update_frequency").value) || 5000
+    );
 }
 main();

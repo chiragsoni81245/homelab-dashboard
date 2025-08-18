@@ -14,6 +14,7 @@
 
         <!-- Tailwind CSS -->
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <input type="hidden" id="update_frequency" value="{{ .UpdateFrequency }}"/>
     </head>
     <body class="lg:md:h-screen bg-cover bg-center">
         <!-- Navbar -->
@@ -40,9 +41,9 @@
                         <span class="font-semibold">CPU Usage</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-4">
-                        <div id="cpuBar" class="bg-blue-500 h-4 rounded-full" style="width: 45%"></div>
+                        <div id="cpuBar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
                     </div>
-                    <span id="cpuText" class="text-md text-white-700">45%</span>
+                    <span id="cpuText" class="text-md text-white-700"></span>
                 </div>
 
                 <!-- Memory -->
@@ -52,9 +53,9 @@
                         <span class="font-semibold">Memory Usage</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-4">
-                        <div id="memoryBar" class="bg-green-500 h-4 rounded-full" style="width: 65%"></div>
+                        <div id="memoryBar" class="bg-green-500 h-4 rounded-full" style="width: 0%"></div>
                     </div>
-                    <span id="memoryText" class="text-md text-white-700">65%</span>
+                    <span id="memoryText" class="text-md text-white-700"></span>
                 </div>
 
                 <!-- Disks -->

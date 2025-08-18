@@ -1,6 +1,7 @@
 package server
 
 import (
+	"homelab-dashboard/internal/config"
 	"html/template"
 	"net/http"
 	"time"
@@ -26,7 +27,11 @@ func (uh *UIHandlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 func (uh *UIHandlers) DashboardHandler(w http.ResponseWriter, r *http.Request) {
 	_ = r.Context().Value("claims").(*JWTClaims)
-	renderTemplate(w, "index", nil)
+	var dashboardData struct {
+		UpdateFrequency int
+	}
+	dashboardData.UpdateFrequency = config.App.Server.UpdateFrequency
+	renderTemplate(w, "index", dashboardData)
 }
 
 func (uh *UIHandlers) Logout(w http.ResponseWriter, r *http.Request) {

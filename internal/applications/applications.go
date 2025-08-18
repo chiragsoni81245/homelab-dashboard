@@ -2,6 +2,7 @@ package applications
 
 import (
 	"context"
+	"homelab-dashboard/internal/logger"
 
 	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/api/types/filters"
@@ -34,11 +35,10 @@ func GetApplications() ([]Application, error) {
 		return nil, err
 	}
 
-	var apps []Application
+	apps := []Application{}
 
 	for _, c := range containers {
 		labels := c.Labels
-
 		app := Application{
 			Name:   labels["x-homelab-name"],
 			WebURL: labels["x-homelab-web-url"],

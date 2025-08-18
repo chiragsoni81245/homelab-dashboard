@@ -1,0 +1,9 @@
+database_uri: "file:/data.db?cache=shared&mode=rwc"
+server:
+  port: 8080
+  log_level: "error"
+  secret_key: "test"
+  update_frequency: 3000
+  admin_auth:
+    username: "admin"
+    password: "123"
